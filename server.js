@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const ROOT = path.join(__dirname, "build");
 const PORT = process.env.PORT || 3000;
 
 const mimeTypes = {
@@ -23,15 +24,15 @@ const mimeTypes = {
 
 http.createServer((req, res) => {
   let filePath = path.join(
-    __dirname,
+    ROOT,
     req.url === "/" ? "index.html" : decodeURIComponent(req.url)
   );
 
   fs.readFile(filePath, (err, data) => {
     if (err) {
-      filePath = path.join(__dirname, "index.html");
-      fs.readFile(filePath, (err, data) => {
-        if (err) {
+      filePath = path.join(ROOT, "index.html");
+      fs.readFile(filePath, (err2, data) => {
+        if (err2) {
           res.writeHead(404);
           return res.end("404 Not Found");
         }
@@ -48,5 +49,5 @@ http.createServer((req, res) => {
     res.end(data);
   });
 }).listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Serving ${ROOT} at http://localhost:${PORT}`);
 });
